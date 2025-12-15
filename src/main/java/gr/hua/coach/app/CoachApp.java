@@ -2,6 +2,8 @@ package gr.hua.coach.app;
 
 import gr.hua.coach.model.Activity;
 
+import gr.hua.coach.parser.ActivityParser;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,18 +32,35 @@ public class CoachApp {
 
         System.out.println("Total activities loaded: " + allActivities.size());
 
-        for (Activity activity : allActivities) {
-            System.out.println("Activity: " + activity.getType());
-            // TODO: print activity stats
+        ActivityParser parser = null; // TODO: inject real parser
+
+        for (File file : options.files) {
+            // TODO: replace with real parser
+            // List<Activity> activitiesFromFile = parser.parse(file);
+            // allActivities.addAll(activitiesFromFile);
         }
 
-        // TODO: call parser
-        // TODO: compute stats
+        for (Activity activity : allActivities) {
+            printActivity(activity);
+        }
+
     }
 
     private static void printUsage() {
         System.out.println("Usage:");
         System.out.println("java -jar coach.jar [-w weight] file1.tcx file2.tcx ...");
+    }
+
+    private static void printActivity(Activity activity) {
+        System.out.println("Activity: " + activity.getType());
+
+        // προσωρινά placeholders
+        System.out.println("Total Time: --:--");
+        System.out.println("Total Distance: -- km");
+        System.out.println("Avg Pace: -- min/km");
+        System.out.println("Avg Heart Rate: -- bpm");
+
+        System.out.println();
     }
 
     private static CliOptions parseArgs(String[] args) {
