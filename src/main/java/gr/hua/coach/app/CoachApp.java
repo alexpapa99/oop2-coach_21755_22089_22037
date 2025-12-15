@@ -26,6 +26,15 @@ public class CoachApp {
             System.out.println("User weight: " + options.weight + " kg");
         }
 
+        List<Activity> allActivities = new ArrayList<>();
+
+        System.out.println("Total activities loaded: " + allActivities.size());
+
+        for (Activity activity : allActivities) {
+            System.out.println("Activity: " + activity.getType());
+            // TODO: print activity stats
+        }
+
         // TODO: call parser
         // TODO: compute stats
     }
