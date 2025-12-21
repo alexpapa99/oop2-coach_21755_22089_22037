@@ -5,6 +5,7 @@ import gr.hua.coach.model.Activity;
 import gr.hua.coach.stats.ActivityStats;
 import gr.hua.coach.stats.StatsCalculator;
 import gr.hua.coach.stats.DefaultStatsCalculator;
+import gr.hua.coach.stats.Calories;
 
 import gr.hua.coach.parser.TcxActivityParser;
 import gr.hua.coach.parser.ActivityParser;
@@ -49,7 +50,8 @@ public class CoachApp {
 
         for (Activity activity : allActivities) {
              ActivityStats stats = statsCalculator.calculate(activity, options.weight);
-             printActivity(activity, stats);
+             printActivity(activity, stats, options.weight);
+
         }
 
     }
@@ -59,31 +61,38 @@ public class CoachApp {
         System.out.println("java -jar coach.jar [-w weight] file1.tcx file2.tcx ...");
     }
 
-    private static void printActivity(Activity activity) {
-        System.out.println("Activity: " + activity.getType());
+    private static void printActivity(Activity activity, ActivityStats stats, Double weight) {
 
-        // προσωρινά placeholders
-        System.out.println("Total Time: --:--");
-        System.out.println("Total Distance: -- km");
-        System.out.println("Avg Pace: -- min/km");
-        System.out.println("Avg Heart Rate: -- bpm");
+    System.out.println("Activity: " + activity.getType());
 
-        System.out.println();
+    System.out.println("Total Time: " + stats.getTotalTime());
+    System.out.println("Total Distance: " + stats.getTotalDistanceKm() + " km");
+
+    // Για running δείχνουμε pace (όπως στο Μέρος 1)
+    System.out.println("Avg Pace: " + stats.getAvgPaceMinPerKm() + " min/km");
+
+    if (stats.getAvgHeartRate() != null) {
+        System.out.println("Avg Heart Rate: " + stats.getAvgHeartRate() + " bpm");
     }
 
-    private static void printActivity(Activity activity, ActivityStats stats) {
-        System.out.println("Activity: " + activity.getType());
+    // calories an yparxei varos
+    
 
-        System.out.println("Total Time: " + stats.getTotalTime());
-        System.out.println("Total Distance: " + stats.getTotalDistanceKm() + " km");
-        System.out.println("Avg Pace: " + stats.getAvgPaceMinPerKm() + " min/km");
+    if (weight != null) {
 
-        if (stats.getAvgHeartRate() != null) {
-            System.out.println("Avg Heart Rate: " + stats.getAvgHeartRate() + " bpm");
-        }
-
-        System.out.println();
+        double kcal = Calories.estimate(
+                activity.getType().getMu(),
+                weight,
+                stats.getTotalTime()
+        );
+        System.out.printf("Calories: %.0f kcal%n", kcal);
     }
+
+    System.out.println();
+}
+
+
+
 
     private static CliOptions parseArgs(String[] args) {
         CliOptions options = new CliOptions();
