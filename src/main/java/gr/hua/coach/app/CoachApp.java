@@ -79,7 +79,6 @@ public class CoachApp {
     System.out.println("Total Time: " + ActivityStats.formatDuration(stats.getTotalTime()));
     System.out.println("Total Distance: " + stats.getTotalDistanceKm() + " km");
 
-    // Για running δείχνουμε pace (όπως στο Μέρος 1)
     System.out.println("Avg Pace: " + stats.getAvgPaceMinPerKm() + " min/km");
 
     if (stats.getAvgHeartRate() != null) {
