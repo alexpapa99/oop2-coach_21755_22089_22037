@@ -4,6 +4,12 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a lap within an activity.
+ *
+ * A lap is a logical subdivision of an activity and consists of one or more tracks.
+ * This class aggregates duration and distance from its tracks.
+ */
 public class Lap {
 
     private final List<Track> tracks;

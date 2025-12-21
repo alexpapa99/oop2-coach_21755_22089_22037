@@ -2,6 +2,12 @@ package gr.hua.coach.stats;
 
 import java.time.Duration;
 
+/**
+ * Immutable data class that holds calculated statistics for an activity.
+ *
+ * Instances of this class contain aggregated values such as total time,
+ * total distance, average pace and average heart rate.
+ */
 public class ActivityStats {
 
     private final Duration totalTime;

@@ -4,6 +4,13 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a track within a lap.
+ *
+ * A track consists of an ordered list of track points.
+ * Duration and distance are calculated based on the first and last points
+ * and the distances between consecutive points.
+ */
 public class Track {
 
     private final List<TrackPoint> points;

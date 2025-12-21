@@ -14,6 +14,18 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Command-line application for analyzing athletic activities stored in TCX files.
+ *
+ * The application accepts one or more .tcx files as input arguments,
+ * parses them into Activity objects and prints basic statistics for each activity.
+ *
+ * Supported options:
+ *  -w <weight> : user's weight in kilograms (optional, used for calorie calculations)
+ *
+ * Example usage:
+ *  java -jar coach.jar -w 70 run.tcx bike.tcx
+ */
 public class CoachApp {
 
     public static void main(String[] args) throws Exception {
@@ -40,7 +52,6 @@ public class CoachApp {
         StatsCalculator statsCalculator = new DefaultStatsCalculator();
 
         for (File file : options.files) {
-            // TODO: replace with real parser
              List<Activity> activitiesFromFile = parser.parse(file);
              allActivities.addAll(activitiesFromFile);
         }

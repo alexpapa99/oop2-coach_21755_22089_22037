@@ -1,5 +1,10 @@
 package gr.hua.coach.model;
 
+/**
+ * Enumeration of supported activity types.
+ *
+ * These types correspond to the sports that can appear in TCX files.
+ */
 public enum ActivityType {
     RUNNING(0.12),
     WALKING(0.06),

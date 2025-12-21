@@ -12,6 +12,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Parser implementation for TCX (Training Center XML) files.
+ *
+ * This class reads TCX XML files and converts their contents into
+ * Activity, Lap, Track and TrackPoint objects.
+ */
 public class TcxActivityParser implements ActivityParser {
 
     @Override

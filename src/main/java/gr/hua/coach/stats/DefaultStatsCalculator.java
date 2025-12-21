@@ -7,6 +7,12 @@ import gr.hua.coach.model.TrackPoint;
 
 import java.time.Duration;
 
+/**
+ * Default implementation of the StatsCalculator interface.
+ *
+ * This class computes basic statistics such as total time, total distance,
+ * average pace and average heart rate for an activity.
+ */
 public class DefaultStatsCalculator implements StatsCalculator {
 
     @Override

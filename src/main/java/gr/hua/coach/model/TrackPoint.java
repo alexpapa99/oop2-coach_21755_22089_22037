@@ -2,6 +2,15 @@ package gr.hua.coach.model;
 
 import java.time.LocalDateTime;
 
+/**
+ * Represents a single measurement point within a track.
+ *
+ * A TrackPoint contains timestamped GPS information such as latitude,
+ * longitude, altitude and optionally heart rate.
+ *
+ * It also provides a method for calculating the distance to another TrackPoint
+ * using the Haversine formula.
+ */
 public class TrackPoint {
 
     private final LocalDateTime time;

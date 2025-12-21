@@ -5,6 +5,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a single athletic activity, such as running, cycling or swimming.
+ *
+ * An Activity has a specific type, a start time and consists of one or more laps.
+ * Each lap may contain one or more tracks which in turn contain track points.
+ *
+ * This class provides basic aggregation methods for computing total time,
+ * total distance and average speed.
+ */
 public class Activity {
 
     private final ActivityType type;
