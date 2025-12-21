@@ -19,6 +19,13 @@ public class ActivityStats {
         this.avgHeartRate = avgHeartRate;
     }
 
+    public static String formatDuration(Duration d) {
+        long seconds = d.getSeconds();
+        long minutes = seconds / 60;
+        long remainingSeconds = seconds % 60;
+        return String.format("%02d:%02d", minutes, remainingSeconds);
+    }
+
     public Duration getTotalTime() {
         return totalTime;
     }
