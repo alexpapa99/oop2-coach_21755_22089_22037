@@ -9,7 +9,9 @@ public enum ActivityType {
     RUNNING(0.12),
     WALKING(0.06),
     CYCLING(0.10),
+    BIKING(0.10),
     SWIMMING(0.13);
+    
 
     private final double mu;
 
