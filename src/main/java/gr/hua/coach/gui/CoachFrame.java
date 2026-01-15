@@ -135,7 +135,7 @@ public class CoachFrame extends JFrame {
         StringBuilder sb = new StringBuilder();
         sb.append("Loaded activities: ").append(all.size()).append("\n\n");
 
-        // (Α) stats ανά activity
+       
         for (Activity a : all) {
             ActivityStats st = statsCalculator.calculate(a, weight);
 
@@ -147,7 +147,7 @@ public class CoachFrame extends JFrame {
                 sb.append("Avg Heart Rate: ").append(st.getAvgHeartRate()).append(" bpm\n");
             }
 
-            // (Γ) θερμίδες: θα το κουμπώσουμε στο επόμενο βήμα με “strategy”
+           ”
             sb.append("Calories method: ").append(method).append("\n");
             if (weight != null) {
                 sb.append("Calories: (calculated in next step)\n");
@@ -158,7 +158,7 @@ public class CoachFrame extends JFrame {
             sb.append("\n");
         }
 
-        // (Β)+(Δ) θα τα κάνουμε αμέσως μετά: add activity + daily goal summary
+        
         if (goal != null) {
             sb.append("Daily goal: ").append(goal).append(" kcal\n");
             sb.append("(daily goal analysis in next step)\n");
