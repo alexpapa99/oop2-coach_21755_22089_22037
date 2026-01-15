@@ -17,7 +17,7 @@ public class CaloriesCalculator {
         return calculateDefault(type, weightKg, duration);
     }
 
-    // “Alternative” τρόπος: απλά ένα multiplier με βάση gender/age (εύκολο & αποδεκτό)
+  
     public static double calculateAlternative(
             ActivityType type,
             double weightKg,
@@ -43,7 +43,7 @@ public class CaloriesCalculator {
         return base * factor;
     }
 
-    // Overload για minutes + gender/age
+   
     public static double calculateAlternative(
             ActivityType type,
             double weightKg,
