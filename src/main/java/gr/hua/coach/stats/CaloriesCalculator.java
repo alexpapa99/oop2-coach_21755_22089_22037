@@ -6,12 +6,12 @@ import java.time.Duration;
 
 public class CaloriesCalculator {
 
-    // ✅ Προτεινόμενο: δουλεύουμε με Duration (ταιριάζει με stats.getTotalTime())
+   
     public static double calculateDefault(ActivityType type, double weightKg, Duration duration) {
         return Calories.estimate(type.getMu(), weightKg, duration);
     }
 
-    // ✅ Αν κάπου έχεις minutes (double), τα κάνουμε Duration
+    
     public static double calculateDefault(ActivityType type, double weightKg, double minutes) {
         Duration duration = Duration.ofSeconds(Math.round(minutes * 60.0));
         return calculateDefault(type, weightKg, duration);
