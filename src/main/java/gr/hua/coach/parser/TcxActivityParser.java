@@ -70,9 +70,13 @@ public class TcxActivityParser implements ActivityParser {
                                 DateTimeFormatter.ISO_DATE_TIME
                         );
 
-                        Element pos = (Element) pointEl
-                                .getElementsByTagName("Position")
-                                .item(0);
+                        NodeList posNodes = pointEl.getElementsByTagName("Position");
+                        if (posNodes.getLength() == 0) {
+                            // we ignore trackpoint without gps
+                            continue;
+                        }
+
+                        Element pos = (Element) posNodes.item(0);
 
                         double lat = Double.parseDouble(
                                 pos.getElementsByTagName("LatitudeDegrees")
@@ -85,6 +89,7 @@ public class TcxActivityParser implements ActivityParser {
                                         .item(0)
                                         .getTextContent()
                         );
+
 
                         double alt = Double.parseDouble(
                                 pointEl.getElementsByTagName("AltitudeMeters")

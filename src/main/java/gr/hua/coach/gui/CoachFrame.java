@@ -13,6 +13,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.time.LocalDate;
+import java.util.Map;
+import java.util.HashMap;
+
 public class CoachFrame extends JFrame {
 
     private final JTextField weightField = new JTextField(6);
@@ -139,20 +143,47 @@ public class CoachFrame extends JFrame {
         for (Activity a : all) {
             ActivityStats st = statsCalculator.calculate(a, weight);
 
+            double calories = -1;
+
+            if (weight != null) {
+                if ("Default (MU)".equals(method)) {
+                    calories = gr.hua.coach.stats.CaloriesCalculator.calculateDefault(
+                            a.getType(), weight, st.getTotalTime()
+                    );
+                } else {
+                    calories = gr.hua.coach.stats.CaloriesCalculator.calculateAlternative(
+                            a.getType(),
+                            weight,
+                            st.getTotalTime(),
+                            gender,
+                            age,
+                            st.getAvgHeartRate()
+                    );
+                }
+            }
+
             sb.append("Activity: ").append(a.getType()).append("\n");
-            sb.append("Total Time: ").append(st.getTotalTime()).append("\n");
+            sb.append("Total Time: ")
+                    .append(ActivityStats.formatDuration(st.getTotalTime()))
+                    .append("\n");
             sb.append("Total Distance: ").append(st.getTotalDistanceKm()).append(" km\n");
             sb.append("Avg Pace: ").append(st.getAvgPaceMinPerKm()).append(" min/km\n");
             if (st.getAvgHeartRate() != null) {
                 sb.append("Avg Heart Rate: ").append(st.getAvgHeartRate()).append(" bpm\n");
             }
 
-           ”
+
             sb.append("Calories method: ").append(method).append("\n");
-            if (weight != null) {
-                sb.append("Calories: (calculated in next step)\n");
-            } else {
+            if (weight == null) {
                 sb.append("Calories: - (enter weight)\n");
+            } else if (!"Default (MU)".equals(method)) {
+                if (age == null || gender == null || "-".equals(gender) || st.getAvgHeartRate() == null) {
+                    sb.append("Calories: - (need age, gender and avg heart rate)\n");
+                } else {
+                    sb.append(String.format("Calories: %.0f kcal%n", calories));
+                }
+            } else {
+                sb.append(String.format("Calories: %.0f kcal%n", calories));
             }
 
             sb.append("\n");
@@ -161,7 +192,52 @@ public class CoachFrame extends JFrame {
         
         if (goal != null) {
             sb.append("Daily goal: ").append(goal).append(" kcal\n");
-            sb.append("(daily goal analysis in next step)\n");
+        }
+
+        if (goal != null && weight != null) {
+            Map<LocalDate, Double> caloriesPerDay = new HashMap<>();
+
+            for (Activity a : all) {
+                ActivityStats st = statsCalculator.calculate(a, weight);
+
+                double kcal;
+                if ("Default (MU)".equals(method)) {
+                    kcal = gr.hua.coach.stats.CaloriesCalculator.calculateDefault(
+                            a.getType(), weight, st.getTotalTime()
+                    );
+                } else {
+                    kcal = gr.hua.coach.stats.CaloriesCalculator.calculateAlternative(
+                            a.getType(), weight, st.getTotalTime(),
+                            gender, age, st.getAvgHeartRate()
+                    );
+                }
+
+                LocalDate day = a.getStartTime().toLocalDate();
+                caloriesPerDay.put(day, caloriesPerDay.getOrDefault(day, 0.0) + kcal);
+            }
+
+            sb.append("\n=== Daily goal analysis ===\n");
+            for (Map.Entry<LocalDate, Double> e : caloriesPerDay.entrySet()) {
+                double total = e.getValue();
+                double remaining = goal - total;
+
+                sb.append(e.getKey()).append(": ")
+                        .append(String.format("%.0f", total)).append(" / ")
+                        .append(String.format("%.0f", goal)).append(" kcal ");
+
+                if (remaining <= 0) {
+                    sb.append("(GOAL ACHIEVED)\n");
+                } else {
+                    sb.append("(remaining: ").append(String.format("%.0f", remaining)).append(")\n");
+                }
+            }
+
+            // how many days remaining toaday
+            LocalDate today = LocalDate.now();
+            double todayTotal = caloriesPerDay.getOrDefault(today, 0.0);
+            double todayRemaining = goal - todayTotal;
+            sb.append("\nToday (").append(today).append(") remaining: ")
+                    .append(String.format("%.0f", Math.max(0, todayRemaining))).append(" kcal\n");
         }
 
         output.setText(sb.toString());
