@@ -4,6 +4,7 @@ import gr.hua.coach.model.Activity;
 import gr.hua.coach.parser.ActivityParser;
 import gr.hua.coach.parser.TcxActivityParser;
 import gr.hua.coach.stats.ActivityStats;
+import gr.hua.coach.stats.CaloriesCalculator;
 import gr.hua.coach.stats.DefaultStatsCalculator;
 import gr.hua.coach.stats.StatsCalculator;
 
@@ -232,12 +233,24 @@ public class CoachFrame extends JFrame {
                 }
             }
 
-            // how many days remaining toaday
+            // how many days remainig toaday
             LocalDate today = LocalDate.now();
             double todayTotal = caloriesPerDay.getOrDefault(today, 0.0);
             double todayRemaining = goal - todayTotal;
             sb.append("\nToday (").append(today).append(") remaining: ")
                     .append(String.format("%.0f", Math.max(0, todayRemaining))).append(" kcal\n");
+                    sb.append(
+    buildOverallSummary(
+        all,
+        statsCalculator,
+        weight,
+        method,
+        gender,
+        age
+    )
+);
+    output.setText(sb.toString());
+
         }
 
         output.setText(sb.toString());
@@ -264,4 +277,102 @@ public class CoachFrame extends JFrame {
             return null;
         }
     }
+    private String buildOverallSummary(List<Activity> activities,
+                                   StatsCalculator statsCalculator,
+                                   Double weight,
+                                   String caloriesMethod,
+                                   String gender,
+                                   Integer age) {
+
+    if (activities.isEmpty()) {
+        return "=== Overall summary ===\nNo activities loaded.\n";
+    }
+
+    java.time.Duration totalTime = java.time.Duration.ZERO;
+    double totalDistanceKm = 0.0;
+
+    // για overall average HR (weighted by duration)
+    double hrWeightedSum = 0.0;
+    long hrWeightSeconds = 0;
+
+    double totalCalories = 0.0;
+
+    for (Activity a : activities) {
+        ActivityStats s = statsCalculator.calculate(a, weight);
+
+        totalTime = totalTime.plus(s.getTotalTime());
+        totalDistanceKm += s.getTotalDistanceKm();
+
+        if (s.getAvgHeartRate() != null) {
+            long secs = s.getTotalTime().getSeconds();
+            hrWeightedSum += s.getAvgHeartRate() * secs;
+            hrWeightSeconds += secs;
+        }
+
+        // Calories (μόνο αν υπάρχει βάρος)
+        if (weight != null) {
+            double minutes = s.getTotalTime().toSeconds() / 60.0;
+
+            // Calories (μόνο αν υπάρχει βάρος)
+if (weight != null) {
+    if ("Alternative".equalsIgnoreCase(caloriesMethod)) {
+        totalCalories += CaloriesCalculator.calculateAlternative(
+                a.getType(),
+                weight,
+                s.getTotalTime(),
+                gender,
+                age,
+                s.getAvgHeartRate()
+        );
+    } else {
+        totalCalories += CaloriesCalculator.calculateDefault(
+                a.getType(),
+                weight,
+                s.getTotalTime()
+        );
+    }
+}
+
+        }
+    }
+
+    Double overallPace = null; // min/km
+    if (totalDistanceKm > 0.0) {
+        double totalMinutes = totalTime.toSeconds() / 60.0;
+        overallPace = totalMinutes / totalDistanceKm;
+    }
+
+    Double overallAvgHr = null;
+    if (hrWeightSeconds > 0) {
+        overallAvgHr = hrWeightedSum / hrWeightSeconds;
+    }
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("\n=== Overall summary ===\n");
+    sb.append("Activities: ").append(activities.size()).append("\n");
+    sb.append("Total time: ").append(totalTime).append("\n");
+    sb.append("Total distance: ").append(totalDistanceKm).append(" km\n");
+
+    if (overallPace != null) {
+        sb.append("Overall pace: ").append(String.format("%.2f", overallPace)).append(" min/km\n");
+    } else {
+        sb.append("Overall pace: -\n");
+    }
+
+    if (overallAvgHr != null) {
+        sb.append("Avg HR: ").append(String.format("%.1f", overallAvgHr)).append(" bpm\n");
+    } else {
+        sb.append("Avg HR: -\n");
+    }
+
+    if (weight != null) {
+        sb.append("Total calories: ").append(String.format("%.0f", totalCalories)).append(" kcal\n");
+    } else {
+        sb.append("Total calories: - (no weight)\n");
+    }
+
+    return sb.toString();
+}
+
+
 }
