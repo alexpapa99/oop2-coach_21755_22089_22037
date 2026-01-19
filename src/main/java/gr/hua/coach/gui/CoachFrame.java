@@ -350,7 +350,9 @@ if (weight != null) {
     StringBuilder sb = new StringBuilder();
     sb.append("\n=== Overall summary ===\n");
     sb.append("Activities: ").append(activities.size()).append("\n");
-    sb.append("Total time: ").append(totalTime).append("\n");
+    sb.append("Total time: ")
+            .append(ActivityStats.formatDuration(totalTime))
+            .append("\n");
     sb.append("Total distance: ").append(totalDistanceKm).append(" km\n");
 
     if (overallPace != null) {
